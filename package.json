@@ -1,6 +1,6 @@
 
 {
-  "name": "cordova-httpd",
+  "name": "cordova-httpd-curltech",
   "description": "Embeded httpd for cordova.",
   "version": "0.9.2",
   "homepage": "https://github.com/floatinghotpot/cordova-httpd#readme",
@@ -12,7 +12,7 @@
     "url": "https://github.com/floatinghotpot/cordova-httpd/issues"
   },
   "cordova": {
-    "id": "com.rjfun.cordova.httpd",
+    "id": "com.rjfun.cordova.httpd-curltech",
     "platforms": [
       "ios",
       "android",
