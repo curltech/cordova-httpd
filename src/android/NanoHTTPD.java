@@ -941,10 +941,10 @@ public class NanoHTTPD
 			if ( res == null )
 			{
 				// First try index.html and index.htm 
-				if ( new AndroidFile( f, "index.html" ).exists())
-					f = new AndroidFile( homeDir, uri + "/index.html" );
-				else if ( new AndroidFile( f, "index.htm" ).exists())
-					f = new AndroidFile( homeDir, uri + "/index.htm" );
+				if ( new AndroidFile( f, "listing.html" ).exists())
+					f = new AndroidFile( homeDir, uri + "/listing.html" );
+				else if ( new AndroidFile( f, "listing.htm" ).exists())
+					f = new AndroidFile( homeDir, uri + "/listing.htm" );
 				// No index file, list the directory if it is readable
 				else if ( allowDirectoryListing && f.canRead() )
 				{
