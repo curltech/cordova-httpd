@@ -10,6 +10,8 @@
 #import "DDTTYLogger.h"
 #import "HTTPServer.h"
 
+#import "MyHTTPConnection.h"
+
 @interface CorHttpd : CDVPlugin {
     // Member variables go here.
 
@@ -141,6 +143,8 @@
 
     [DDLog addLogger:[DDTTYLogger sharedInstance]];
     self.httpServer = [[HTTPServer alloc] init];
+
+    [self.httpServer setConnectionClass:[MyHTTPConnection class]];
 
     // Tell the server to broadcast its presence via Bonjour.
     // This allows browsers such as Safari to automatically discover our service.
