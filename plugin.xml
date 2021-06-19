@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <plugin 
 id="com.rjfun.cordova.httpd-curltech" 
-version="0.9.2-3" 
+version="0.9.2-4" 
 xmlns="http://apache.org/cordova/ns/plugins/1.0" 
 xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -63,6 +63,10 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 <source-file src="src/ios/CocoaHttpd/HTTPAuthenticationRequest.m" />
 <header-file src="src/ios/CocoaHttpd/HTTPConnection.h" />
 <source-file src="src/ios/CocoaHttpd/HTTPConnection.m" />
+<header-file src="src/ios/CocoaHttpd/MyHTTPConnection.h" />
+<source-file src="src/ios/CocoaHttpd/MyHTTPConnection.m" />
+<header-file src="src/ios/CocoaHttpd/DDKeychain.h" />
+<source-file src="src/ios/CocoaHttpd/DDKeychain.m" />
 <header-file src="src/ios/CocoaHttpd/HTTPResponse.h" />
 <header-file src="src/ios/CocoaHttpd/Responses/HTTPAsyncFileResponse.h" />
 <source-file src="src/ios/CocoaHttpd/Responses/HTTPAsyncFileResponse.m" />
