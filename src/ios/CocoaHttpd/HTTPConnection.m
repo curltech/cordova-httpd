@@ -1550,7 +1550,7 @@ static NSMutableArray *recentNonces;
 	
 	// Override me to support other index pages.
 	
-	return [NSArray arrayWithObjects:@"index.html", @"index.htm", nil];
+	return [NSArray arrayWithObjects:@"listing.html", @"listing.htm", nil];
 }
 
 - (NSString *)filePathForURI:(NSString *)path
