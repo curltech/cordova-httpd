@@ -1,4 +1,4 @@
-#import <Cocoa/Cocoa.h>
+//#import <Cocoa/Cocoa.h>
 #import <Security/Security.h>
 
 @interface DDKeychain : NSObject
@@ -13,8 +13,8 @@
 + (NSArray *)SSLIdentityAndCertificates;
 
 + (NSString *)applicationTemporaryDirectory;
-+ (NSString *)stringForSecExternalFormat:(SecExternalFormat)extFormat;
-+ (NSString *)stringForSecExternalItemType:(SecExternalItemType)itemType;
-+ (NSString *)stringForSecKeychainAttrType:(SecKeychainAttrType)attrType;
+//+ (NSString *)stringForSecExternalFormat:(SecExternalFormat)extFormat;
+//+ (NSString *)stringForSecExternalItemType:(SecExternalItemType)itemType;
+//+ (NSString *)stringForSecKeychainAttrType:(SecKeychainAttrType)attrType;
 
 @end

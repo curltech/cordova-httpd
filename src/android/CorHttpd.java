@@ -1,11 +1,13 @@
 package com.rjfun.cordova.httpd;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.security.KeyStore;
 import java.util.Enumeration;
 
 import org.apache.cordova.CordovaPlugin;
@@ -43,7 +45,8 @@ public class CorHttpd extends CordovaPlugin {
 	private boolean localhost_only = false;
 
 	private String localPath = "";
-	private WebServer server = null;
+	//private WebServer server = null;
+    private SimpleWebServer server = null;
 	private String	url = "";
 
     @Override
@@ -145,14 +148,19 @@ public class CorHttpd extends CordovaPlugin {
 			AssetManager am = ctx.getResources().getAssets();
     		f.setAssetManager( am );
     		
-    		if(localhost_only) {
+    		/*if(localhost_only) {
     			InetSocketAddress localAddr = new InetSocketAddress(InetAddress.getByAddress(new byte[]{127,0,0,1}), port);
     			server = new WebServer(localAddr, f);
     		} else {
     			server = new WebServer(port, f);
-    		}
+    		}*/
+            server = new SimpleWebServer(null, port, f, false, "*");
+            System.setProperty("javax.net.ssl.trustStore", new File("/com/rjfun/cordova/httpd/server-ec.bks").getAbsolutePath());
+            System.setProperty("java.io.tmpdir", localPath);
+            server.makeSecure(NanoHTTPD.makeSSLSocketFactory("server-ec.bks", "123456".toCharArray()), null);
+            server.start();
 		} catch (IOException e) {
-			errmsg = String.format("IO Exception: %s", e.getMessage());
+			errmsg = String.format("IO Exception: %s;keyStoreDefaultType: %s;trustStore: %s;tmpdir: %s", e.getMessage(), KeyStore.getDefaultType(), System.getProperty("javax.net.ssl.trustStore"), System.getProperty("java.io.tmpdir"));
 			Log.w(LOGTAG, errmsg);
 		}
     	return errmsg;

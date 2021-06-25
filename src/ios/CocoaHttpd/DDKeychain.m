@@ -10,7 +10,7 @@
 /**
  * Retrieves the password stored in the keychain for the HTTP server.
 **/
-+ (NSString *)passwordForHTTPServer
+/*+ (NSString *)passwordForHTTPServer
 {
 	NSString *password = nil;
 	
@@ -43,13 +43,13 @@
 	if(passwordBytes) SecKeychainItemFreeContent(NULL, passwordBytes);
 	
 	return password;
-}
+}*/
 
 
 /**
  * This method sets the password for the HTTP server.
 **/
-+ (BOOL)setPasswordForHTTPServer:(NSString *)password
+/*+ (BOOL)setPasswordForHTTPServer:(NSString *)password
 {
 	const char *service = [@"HTTP Server" UTF8String];
 	const char *account = [@"Deusty" UTF8String];
@@ -101,7 +101,7 @@
 	if(itemRef)    CFRelease(itemRef);
 	
 	return (status == noErr);
-}
+}*/
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark Identity:
@@ -112,7 +112,7 @@
  * An identity is simply a certificate (public key and public information) along with a matching private key.
  * This method generates a new private key, and then uses the private key to generate a new self-signed certificate.
 **/
-+ (void)createNewIdentity
+/*+ (void)createNewIdentity
 {
 	// Declare any Carbon variables we may create
 	// We do this here so it's easier to compare to the bottom of this method where we release them all
@@ -218,7 +218,7 @@
 	// We can do this by using the SecKeychainItemImport() method.
 	// But of course this method is "Frozen in Carbonite"...
 	// So it's going to take us 100 lines of code to build up the parameters needed to make the method call
-	NSData *certData = [NSData dataWithContentsOfFile:certWrapperPath];
+	NSData *certData = [NSData dataWithContentsOfFile:certWrapperPath];*/
 	
 	/* SecKeyImportExportFlags - typedef uint32_t
 	 * Defines values for the flags field of the import/export parameters.
@@ -245,7 +245,7 @@
 	 *     the accessRef field in SecKeyImportExportParameters, imported private keys are given default access controls
 	**/
 	
-	SecKeyImportExportFlags importFlags = kSecKeyImportOnlyOne;
+	/*SecKeyImportExportFlags importFlags = kSecKeyImportOnlyOne;*/
 	
 	/* SecKeyImportExportParameters - typedef struct
 	 *
@@ -286,13 +286,13 @@
 	 *     you cannot extract the imported key from the keychain in any form, including in wrapped form.
 	**/
 	
-	SecKeyImportExportParameters importParameters;
+	/*SecKeyImportExportParameters importParameters;
 	importParameters.version = SEC_KEY_IMPORT_EXPORT_PARAMS_VERSION;
 	importParameters.flags = importFlags;
 	importParameters.passphrase = CFSTR("password");
 	importParameters.accessRef = NULL;
 	importParameters.keyUsage = CSSM_KEYUSE_ANY;
-	importParameters.keyAttributes = CSSM_KEYATTR_SENSITIVE | CSSM_KEYATTR_EXTRACTABLE;
+	importParameters.keyAttributes = CSSM_KEYATTR_SENSITIVE | CSSM_KEYATTR_EXTRACTABLE;*/
 	
 	/* SecKeychainItemImport - Imports one or more certificates, keys, or identities and adds them to a keychain.
 	 * 
@@ -332,7 +332,7 @@
 	 *     Release this object by calling the CFRelease function when you no longer need it.
 	**/
 	
-	SecExternalFormat inputFormat = kSecFormatPKCS12;
+	/*SecExternalFormat inputFormat = kSecFormatPKCS12;
 	SecExternalItemType itemType = kSecItemTypeUnknown;
 	
 	SecKeychainCopyDefault(&keychain);
@@ -363,14 +363,14 @@
 	// Don't forget to release anything we may have created
 	if(keychain)   CFRelease(keychain);
 	if(outItems)   CFRelease(outItems);
-}
+}*/
 
 /**
  * Returns an array of SecCertificateRefs except for the first element in the array, which is a SecIdentityRef.
  * Currently this method is designed to return the identity created in the method above.
  * You will most likely alter this method to return a proper identity based on what it is you're trying to do.
 **/
-+ (NSArray *)SSLIdentityAndCertificates
+/*+ (NSArray *)SSLIdentityAndCertificates
 {
 	// Declare any Carbon variables we may create
 	// We do this here so it's easier to compare to the bottom of this method where we release them all
@@ -378,7 +378,7 @@
 	SecIdentitySearchRef searchRef = NULL;
 	
 	// Create array to hold the results
-	NSMutableArray *result = [NSMutableArray array];
+	NSMutableArray *result = [NSMutableArray array];*/
 	
 	/* SecKeychainAttribute - typedef struct
 	 * Contains keychain attributes.
@@ -415,7 +415,7 @@
 	 *     A pointer to the first keychain attribute in the array.
 	**/
 	
-	SecKeychainCopyDefault(&keychain);
+	/*SecKeychainCopyDefault(&keychain);
 	
 	SecIdentitySearchCreate(keychain, CSSM_KEYUSE_ANY, &searchRef);
 	
@@ -479,6 +479,55 @@
 	if(searchRef) CFRelease(searchRef);
 	
 	return result;
+}*/
+
+/**
+ * Overrides HTTPConnection's method
+ *
+ * This method is expected to returns an array appropriate for use in kCFStreamSSLCertificates SSL Settings.
+ * It should be an array of SecCertificateRefs except for the first element in the array, which is a SecIdentityRef.
+ **/
+//- (NSArray *)sslIdentityAndCertificates
++ (NSArray *)SSLIdentityAndCertificates
+{
+    NSLog(@"DDKeychain-SSLIdentityAndCertificates");
+    SecIdentityRef identityRef = NULL;
+    SecCertificateRef certificateRef = NULL;
+    SecTrustRef trustRef = NULL;
+
+    NSString *thePath = [[NSBundle mainBundle]
+        pathForResource:@"server-ec" ofType:@"p12"];
+    //pathForResource:@"TestCertificate" ofType:@"p12"];
+    NSLog(@"certificate path: %@", thePath);
+    NSData *PKCS12Data = [[NSData alloc] initWithContentsOfFile:thePath];
+    CFDataRef inPKCS12Data = (__bridge CFDataRef)PKCS12Data;
+    //CFStringRef password = CFSTR("test123");
+    CFStringRef password = CFSTR("123456");
+    const void *keys[] = { kSecImportExportPassphrase };
+    const void *values[] = { password };
+    CFDictionaryRef optionsDictionary = CFDictionaryCreate(NULL, keys, values, 1, NULL, NULL);
+    CFArrayRef items = CFArrayCreate(NULL, 0, 0, NULL);
+
+    OSStatus securityError = errSecSuccess;
+    securityError =  SecPKCS12Import(inPKCS12Data, optionsDictionary, &items);
+    if (securityError == 0) {
+        NSLog(@"securityError is 0");
+        CFDictionaryRef myIdentityAndTrust = CFArrayGetValueAtIndex (items, 0);
+        const void *tempIdentity = NULL;
+        tempIdentity = CFDictionaryGetValue (myIdentityAndTrust, kSecImportItemIdentity);
+        identityRef = (SecIdentityRef)tempIdentity;
+        const void *tempTrust = NULL;
+        tempTrust = CFDictionaryGetValue (myIdentityAndTrust, kSecImportItemTrust);
+        trustRef = (SecTrustRef)tempTrust;
+    } else {
+        NSLog(@"Failed with error code %d",(int)securityError);
+        return nil;
+    }
+
+    SecIdentityCopyCertificate(identityRef, &certificateRef);
+    NSArray *result = [[NSArray alloc] initWithObjects:(__bridge id)identityRef, (__bridge id)certificateRef, nil];
+
+    return result;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -509,43 +558,43 @@
 /**
  * Simple utility class to convert a SecExternalFormat into a string suitable for printing/logging.
 **/
-+ (NSString *)stringForSecExternalFormat:(SecExternalFormat)extFormat
+/*+ (NSString *)stringForSecExternalFormat:(SecExternalFormat)extFormat
 {
 	switch(extFormat)
 	{
 		case kSecFormatUnknown              : return @"kSecFormatUnknown";
 			
 		/* Asymmetric Key Formats */
-		case kSecFormatOpenSSL              : return @"kSecFormatOpenSSL";
+		/*case kSecFormatOpenSSL              : return @"kSecFormatOpenSSL";
 		case kSecFormatSSH                  : return @"kSecFormatSSH - Not Supported";
-		case kSecFormatBSAFE                : return @"kSecFormatBSAFE";
+		case kSecFormatBSAFE                : return @"kSecFormatBSAFE";*/
 			
 		/* Symmetric Key Formats */
-		case kSecFormatRawKey               : return @"kSecFormatRawKey";
+		/*case kSecFormatRawKey               : return @"kSecFormatRawKey";*/
 			
 		/* Formats for wrapped symmetric and private keys */
-		case kSecFormatWrappedPKCS8         : return @"kSecFormatWrappedPKCS8";
+		/*case kSecFormatWrappedPKCS8         : return @"kSecFormatWrappedPKCS8";
 		case kSecFormatWrappedOpenSSL       : return @"kSecFormatWrappedOpenSSL";
 		case kSecFormatWrappedSSH           : return @"kSecFormatWrappedSSH - Not Supported";
-		case kSecFormatWrappedLSH           : return @"kSecFormatWrappedLSH - Not Supported";
+		case kSecFormatWrappedLSH           : return @"kSecFormatWrappedLSH - Not Supported";*/
 			
 		/* Formats for certificates */
-		case kSecFormatX509Cert             : return @"kSecFormatX509Cert";
+		/*case kSecFormatX509Cert             : return @"kSecFormatX509Cert";*/
 			
 		/* Aggregate Types */
-		case kSecFormatPEMSequence          : return @"kSecFormatPEMSequence";
+		/*case kSecFormatPEMSequence          : return @"kSecFormatPEMSequence";
 		case kSecFormatPKCS7                : return @"kSecFormatPKCS7";
 		case kSecFormatPKCS12               : return @"kSecFormatPKCS12";
 		case kSecFormatNetscapeCertSequence : return @"kSecFormatNetscapeCertSequence";
 			
 		default                             : return @"Unknown";
 	}
-}
+}*/
 
 /**
  * Simple utility class to convert a SecExternalItemType into a string suitable for printing/logging.
 **/
-+ (NSString *)stringForSecExternalItemType:(SecExternalItemType)itemType
+/*+ (NSString *)stringForSecExternalItemType:(SecExternalItemType)itemType
 {
 	switch(itemType)
 	{
@@ -559,12 +608,12 @@
 		
 		default                      : return @"Unknown";
 	}
-}
+}*/
 
 /**
  * Simple utility class to convert a SecKeychainAttrType into a string suitable for printing/logging.
 **/
-+ (NSString *)stringForSecKeychainAttrType:(SecKeychainAttrType)attrType
+/*+ (NSString *)stringForSecKeychainAttrType:(SecKeychainAttrType)attrType
 {
 	switch(attrType)
 	{
@@ -598,6 +647,6 @@
 		case kSecAlias                      : return @"kSecAlias";
 		default                             : return @"Unknown";
 	}
-}
+}*/
 
 @end

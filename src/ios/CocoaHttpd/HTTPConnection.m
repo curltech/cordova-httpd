@@ -600,14 +600,14 @@ static NSMutableArray *recentNonces;
 	// Be sure to invoke [super startConnection] when you're done.
 	
 	HTTPLogTrace();
-	
+    NSLog(@"startConnection");
 	if ([self isSecureServer])
 	{
 		// We are configured to be an HTTPS server.
 		// That is, we secure via SSL/TLS the connection prior to any communication.
-		
+        NSLog(@"isSecureServer");
 		NSArray *certificates = [self sslIdentityAndCertificates];
-		
+        NSLog(@"certificates count: %lu", (unsigned long)[certificates count]);
 		if ([certificates count] > 0)
 		{
 			// All connections are assumed to be secure. Only secure connections are allowed on this server.
