@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <plugin 
 id="com.rjfun.cordova.httpd-curltech" 
-version="0.9.2-6" 
+version="0.9.2-7" 
 xmlns="http://apache.org/cordova/ns/plugins/1.0" 
 xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -38,7 +38,36 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 <source-file src="src/android/CorHttpd.java" target-dir="src/com/rjfun/cordova/httpd" />
 <source-file src="src/android/AndroidFile.java" target-dir="src/com/rjfun/cordova/httpd" />
 <source-file src="src/android/NanoHTTPD.java" target-dir="src/com/rjfun/cordova/httpd" />
-<source-file src="src/android/WebServer.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/SimpleWebServer.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/ClientHandler.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/HTTPSession.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/IHTTPSession.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/InternalRewrite.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/ServerRunnable.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/WebServerPlugin.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/WebServerPluginInfo.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/server-ec.jks" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/content/ContentType.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/content/Cookie.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/content/CookieHandler.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/request/Method.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/response/ChunkedOutputStream.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/response/IStatus.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/response/Response.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/response/Status.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/sockets/DefaultServerSocketFactory.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/sockets/SecureServerSocketFactory.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/tempfiles/DefaultTempFile.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/tempfiles/DefaultTempFileManager.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/tempfiles/DefaultTempFileManagerFactory.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/tempfiles/ITempFile.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/tempfiles/ITempFileManager.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/threading/DefaultAsyncRunner.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/threading/IAsyncRunner.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/util/IFactory.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/util/IFactoryThrowing.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/util/IHandler.java" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/util/ServerRunner.java" target-dir="src/com/rjfun/cordova/httpd" />
 
 </platform>
 
