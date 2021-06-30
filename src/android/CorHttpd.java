@@ -155,7 +155,7 @@ public class CorHttpd extends CordovaPlugin {
     			server = new WebServer(port, f);
     		}*/
             server = new SimpleWebServer(null, port, f, false, "*");
-            System.setProperty("javax.net.ssl.trustStore", new File("server-ec.bks").getAbsolutePath());
+            System.setProperty("javax.net.ssl.trustStore", new File("/com/rjfun/cordova/httpd/server-ec.bks").getAbsolutePath());
             System.setProperty("java.io.tmpdir", localPath);
             server.makeSecure(NanoHTTPD.makeSSLSocketFactory(System.getProperty("javax.net.ssl.trustStore"), "123456".toCharArray()), null);
             server.start();
