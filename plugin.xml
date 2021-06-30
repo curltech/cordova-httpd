@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <plugin 
 id="com.rjfun.cordova.httpd-curltech" 
-version="0.9.2-8" 
+version="0.9.2-9" 
 xmlns="http://apache.org/cordova/ns/plugins/1.0" 
 xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -46,7 +46,7 @@ xmlns:android="http://schemas.android.com/apk/res/android">
 <source-file src="src/android/ServerRunnable.java" target-dir="src/com/rjfun/cordova/httpd" />
 <source-file src="src/android/WebServerPlugin.java" target-dir="src/com/rjfun/cordova/httpd" />
 <source-file src="src/android/WebServerPluginInfo.java" target-dir="src/com/rjfun/cordova/httpd" />
-<source-file src="src/android/server-ec.jks" target-dir="src/com/rjfun/cordova/httpd" />
+<source-file src="src/android/server-ec.bks" target-dir="src/com/rjfun/cordova/httpd" />
 <source-file src="src/android/content/ContentType.java" target-dir="src/com/rjfun/cordova/httpd/content" />
 <source-file src="src/android/content/Cookie.java" target-dir="src/com/rjfun/cordova/httpd/content" />
 <source-file src="src/android/content/CookieHandler.java" target-dir="src/com/rjfun/cordova/httpd/content" />
