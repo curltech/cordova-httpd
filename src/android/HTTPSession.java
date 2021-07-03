@@ -62,6 +62,8 @@ import java.util.regex.Matcher;
 
 import javax.net.ssl.SSLException;
 
+import android.util.Log;
+
 import com.rjfun.cordova.httpd.NanoHTTPD.ResponseException;
 import com.rjfun.cordova.httpd.content.ContentType;
 import com.rjfun.cordova.httpd.content.CookieHandler;
@@ -220,20 +222,26 @@ public class HTTPSession implements IHTTPSession {
                     Matcher matcher = NanoHTTPD.CONTENT_DISPOSITION_PATTERN.matcher(mpline);
                     if (matcher.matches()) {
                         String attributeString = matcher.group(2);
+                        Log.w("attributeString", attributeString);
                         matcher = NanoHTTPD.CONTENT_DISPOSITION_ATTRIBUTE_PATTERN.matcher(attributeString);
                         while (matcher.find()) {
                             String key = matcher.group(1);
+                            Log.w("key", key);
                             if ("name".equalsIgnoreCase(key)) {
                                 partName = matcher.group(2);
+                                Log.w("partName", partName);
                             } else if ("filename".equalsIgnoreCase(key)) {
                                 fileName = matcher.group(2);
+                                Log.w("fileName", fileName);
                                 // add these two line to support multiple
                                 // files uploaded using the same field Id
                                 if (!fileName.isEmpty()) {
-                                    if (pcount > 0)
+                                    if (pcount > 0) {
                                         partName = partName + String.valueOf(pcount++);
-                                    else
+                                        Log.w("fileName-partName", partName);
+                                    } else {
                                         pcount++;
+                                    }
                                 }
                             }
                         }
@@ -241,6 +249,7 @@ public class HTTPSession implements IHTTPSession {
                     matcher = NanoHTTPD.CONTENT_TYPE_PATTERN.matcher(mpline);
                     if (matcher.matches()) {
                         partContentType = matcher.group(2).trim();
+                        Log.w("partContentType", partContentType);
                     }
                     mpline = in.readLine();
                     headerLines++;
@@ -273,6 +282,7 @@ public class HTTPSession implements IHTTPSession {
                 } else {
                     // Read it into a file
                     String path = saveTmpFile(fbuf, partDataStart, partDataEnd - partDataStart, fileName);
+                    Log.w("path", path);
                     if (!files.containsKey(partName)) {
                         files.put(partName, path);
                     } else {
@@ -639,6 +649,7 @@ public class HTTPSession implements IHTTPSession {
             if (Method.POST.equals(this.method)) {
                 ContentType contentType = new ContentType(this.headers.get("content-type"));
                 if (contentType.isMultipart()) {
+                    Log.w("HTTPSession", "isMultipart");
                     String boundary = contentType.getBoundary();
                     if (boundary == null) {
                         throw new ResponseException(Status.BAD_REQUEST, "BAD REQUEST: Content type is multipart/form-data but boundary missing. Usage: GET /example/file.html");

@@ -54,16 +54,25 @@ public class DefaultTempFile implements ITempFile {
 
     private final OutputStream fstream;
 
-    public DefaultTempFile(File tempdir) throws IOException {
-        this.file = File.createTempFile("NanoHTTPD-", "", tempdir);
+    public DefaultTempFile(File tempdir, String filename_hint) throws IOException {
+        System.out.println("filename_hint:" + filename_hint);
+        if (filename_hint == null || filename_hint.length() == 0) {
+            this.file = File.createTempFile("NanoHTTPD-", null, tempdir);
+        } else {
+            this.file = new File(tempdir, filename_hint);
+        }
         this.fstream = new FileOutputStream(this.file);
     }
 
     @Override
     public void delete() throws Exception {
         NanoHTTPD.safeClose(this.fstream);
-        if (!this.file.delete()) {
-            throw new Exception("could not delete temporary file: " + this.file.getAbsolutePath());
+        String path = this.file.getAbsolutePath();
+        if (path.indexOf(".tmp") > -1) {
+            System.out.println("delete temporary file: " + path);
+            if (!this.file.delete()) {
+                throw new Exception("could not delete temporary file: " + path);
+            }
         }
     }
 

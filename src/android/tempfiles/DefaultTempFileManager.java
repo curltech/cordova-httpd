@@ -78,7 +78,7 @@ public class DefaultTempFileManager implements ITempFileManager {
 
     @Override
     public ITempFile createTempFile(String filename_hint) throws Exception {
-        DefaultTempFile tempFile = new DefaultTempFile(this.tmpdir);
+        DefaultTempFile tempFile = new DefaultTempFile(this.tmpdir, filename_hint);
         this.tempFiles.add(tempFile);
         return tempFile;
     }

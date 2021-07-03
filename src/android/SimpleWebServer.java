@@ -230,10 +230,12 @@ public class SimpleWebServer extends NanoHTTPD {
         boolean canServeUri;
         AndroidFile f = new AndroidFile(homeDir, uri);
         canServeUri = f.exists();
+        Log.w(LOGTAG, "canServeUri: " + canServeUri);
         if (!canServeUri) {
             WebServerPlugin plugin = SimpleWebServer.mimeTypeHandlers.get(getMimeTypeForFile(uri));
             if (plugin != null) {
                 canServeUri = plugin.canServeUri(uri, homeDir);
+                Log.w(LOGTAG, "plugin is not null, canServeUri: " + canServeUri);
             }
         }
         return canServeUri;
@@ -367,9 +369,34 @@ public class SimpleWebServer extends NanoHTTPD {
     private Response respond(Map<String, String> headers, IHTTPSession session, String uri) {
         // First let's handle CORS OPTION query
         Response r;
-        if (cors != null && Method.OPTIONS.equals(session.getMethod())) {
+        Method method = session.getMethod();
+        Log.w(LOGTAG, "method:" + method);
+        Log.w(LOGTAG, "cors:" + cors);
+        Log.w(LOGTAG, "uri:" + uri);
+        if (Method.PUT.equals(method) || Method.POST.equals(method)) {
+            StringBuilder responseMsg = new StringBuilder();
+            try {
+                Map<String, String> files = new HashMap<String, String>();
+                session.parseBody(files);
+                int i = 1;
+                for (String key : files.keySet()) {
+                    responseMsg.append((i > 1 ? ";" : "") + key + ":" + files.get(key));
+                    i++;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                responseMsg.append(e.getMessage());
+            }
+            Log.w(LOGTAG, "Put/Post-newFixedLengthResponse, responseMsg: " + responseMsg.toString());
+            //r = Response.newFixedLengthResponse(responseMsg.toString());
+            AndroidFile f = new AndroidFile(new AndroidFile("/data/user/0/io.curltech.colla/files/files/"), "/collaBackup-1625135403569-1625220677998.db");
+            String mimeTypeForFile = getMimeTypeForFile(uri);
+            r = serveFile(uri, headers, f, mimeTypeForFile);
+        } else if (cors != null && Method.OPTIONS.equals(method)) {
+            Log.w(LOGTAG, "cors&OPTIONS-newFixedLengthResponse");
             r = Response.newFixedLengthResponse(Status.OK, MIME_PLAINTEXT, null, 0);
         } else {
+            Log.w(LOGTAG, "!cors&OPTIONS-defaultRespond");
             r = defaultRespond(headers, session, uri);
         }
 
