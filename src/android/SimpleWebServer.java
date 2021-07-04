@@ -388,10 +388,10 @@ public class SimpleWebServer extends NanoHTTPD {
                 responseMsg.append(e.getMessage());
             }
             Log.w(LOGTAG, "Put/Post-newFixedLengthResponse, responseMsg: " + responseMsg.toString());
-            //r = Response.newFixedLengthResponse(responseMsg.toString());
-            AndroidFile f = new AndroidFile(new AndroidFile("/data/user/0/io.curltech.colla/files/files/"), "/collaBackup-1625135403569-1625220677998.db");
-            String mimeTypeForFile = getMimeTypeForFile(uri);
-            r = serveFile(uri, headers, f, mimeTypeForFile);
+            r = Response.newFixedLengthResponse(responseMsg.toString());
+            //AndroidFile f = new AndroidFile(new AndroidFile("/data/user/0/io.curltech.colla/files/files/"), "/collaBackup-1625135403569-1625220677998.db");
+            //String mimeTypeForFile = getMimeTypeForFile(uri);
+            //r = serveFile(uri, headers, f, mimeTypeForFile);
         } else if (cors != null && Method.OPTIONS.equals(method)) {
             Log.w(LOGTAG, "cors&OPTIONS-newFixedLengthResponse");
             r = Response.newFixedLengthResponse(Status.OK, MIME_PLAINTEXT, null, 0);
