@@ -175,7 +175,7 @@
         int listenPort = [self.httpServer listeningPort];
         NSString* ip = self.localhost_only ? IP_LOCALHOST : [self getIPAddress:YES];
 		NSLog(@"Started httpd on port %d", listenPort);
-        self.url = [NSString stringWithFormat:@"https://%@:%d/", ip, listenPort];
+        self.url = [NSString stringWithFormat:@"https://%@:%d", ip, listenPort];
         pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:self.url];
 
 	} else {

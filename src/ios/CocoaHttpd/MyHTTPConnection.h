@@ -1,10 +1,13 @@
 //#import <Cocoa/Cocoa.h>
 #import "HTTPConnection.h"
 
+@class MultipartFormDataParser;
 
-@interface MyHTTPConnection : HTTPConnection
-{
-
+@interface MyHTTPConnection : HTTPConnection {
+    MultipartFormDataParser*        parser;
+	NSFileHandle*					storeFile;
+	
+	NSMutableArray*					uploadedFiles;
 }
 
 @end

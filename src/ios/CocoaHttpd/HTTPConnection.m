@@ -263,7 +263,10 @@ static NSMutableArray *recentNonces;
 	
 	if ([method isEqualToString:@"HEAD"])
 		return YES;
-		
+    
+    if ([method isEqualToString:@"POST"])
+        return YES;
+    
 	return NO;
 }
 
@@ -991,7 +994,8 @@ static NSMutableArray *recentNonces;
 	// Respond properly to HTTP 'GET' and 'HEAD' commands
 	httpResponse = [self httpResponseForMethod:method URI:uri];
 	
-	if (httpResponse == nil)
+	//if (httpResponse == nil)
+	if (httpResponse == nil && ![method isEqualToString:@"POST"])
 	{
 		[self handleResourceNotFound];
 		return;
@@ -1935,6 +1939,12 @@ static NSMutableArray *recentNonces;
 	// Add server capability headers
 	[response setHeaderField:@"Accept-Ranges" value:@"bytes"];
 	
+    [response setHeaderField:@"Access-Control-Allow-Origin" value:@"*"];
+    [response setHeaderField:@"Access-Control-Allow-Headers" value:@"origin,accept,content-type"];
+    [response setHeaderField:@"Access-Control-Allow-Credentials" value:@"true"];
+    [response setHeaderField:@"Access-Control-Allow-Methods" value:@"GET, POST, PUT, DELETE, OPTIONS, HEAD"];
+    [response setHeaderField:@"Access-Control-Allow-Age" value:@"151200"]; // 42 * 60 * 60
+    
 	// Add optional response headers
 	if ([httpResponse respondsToSelector:@selector(httpHeaders)])
 	{
@@ -2054,16 +2064,16 @@ static NSMutableArray *recentNonces;
 			
 			// Extract the method (such as GET, HEAD, POST, etc)
 			NSString *method = [request method];
-			
+            HTTPLogWarn(@"method: %@", method);
 			// Extract the uri (such as "/index.html")
 			NSString *uri = [self requestURI];
-			
+            HTTPLogWarn(@"uri: %@", uri);
 			// Check for a Transfer-Encoding field
 			NSString *transferEncoding = [request headerField:@"Transfer-Encoding"];
-      
+            HTTPLogWarn(@"Transfer-Encoding: %@", transferEncoding);
 			// Check for a Content-Length field
 			NSString *contentLength = [request headerField:@"Content-Length"];
-			
+            HTTPLogWarn(@"Content-Length: %@", contentLength);
 			// Content-Length MUST be present for upload methods (such as POST or PUT)
 			// and MUST NOT be present for other methods.
 			BOOL expectsUpload = [self expectsRequestBodyFromMethod:method atPath:uri];
