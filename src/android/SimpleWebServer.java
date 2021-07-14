@@ -59,6 +59,7 @@ import com.rjfun.cordova.httpd.response.Response;
 import com.rjfun.cordova.httpd.response.Status;
 import com.rjfun.cordova.httpd.util.ServerRunner;
 
+import android.net.Uri;
 import android.util.Log;
 
 public class SimpleWebServer extends NanoHTTPD {
@@ -443,7 +444,7 @@ public class SimpleWebServer extends NanoHTTPD {
             Log.w(LOGTAG, "isDirectory");
             // First look for index files (index.html, index.htm, etc) and if
             // none found, list the directory if readable.
-            String indexFile = findIndexFileInDirectory(f);
+            /*String indexFile = findIndexFileInDirectory(f);
             if (indexFile == null) {
                 if (f.canRead()) {
                     // No index file, list the directory if it is readable
@@ -453,7 +454,31 @@ public class SimpleWebServer extends NanoHTTPD {
                 }
             } else {
                 return respond(headers, session, uri + indexFile);
+            }*/
+            String tip = "You can access now, please retry your operation.";
+            String language = "en-us";
+            String param = session.getQueryParameterString();
+            if (param != null && !param.isEmpty()) {
+                int pos = param.indexOf("language=");
+                if (pos > -1) {
+                    String str = param.substring(pos + 9);
+                    String[] arr = str.split("&");
+                    language = arr[0];
+                }
             }
+            if (language != null && !language.isEmpty()) {
+                if (language.equals("zh-hans")) {
+                    tip = "你现在可以访问了，请重试你的操作。";
+                } else if (language.equals("zh-tw")) {
+                    tip = "你現在可以訪問了，請重試你的操作。";
+                } else if (language.equals("ko-kr")) {
+                    tip = "지금 액세스 할 수 있습니다，작업을 다시 시도하십시오。";
+                } else if (language.equals("ja-jp")) {
+                    tip = "今すぐアクセスできます，操作を再試行してください。";
+                }
+            }
+            System.out.println("uri:" + uri + ",language:" + language + ",tip:" + tip);
+            return newFixedLengthResponse(Status.OK, NanoHTTPD.MIME_PLAINTEXT, tip);
         }
         Log.w(LOGTAG, "uri: " + uri);
         String mimeTypeForFile = getMimeTypeForFile(uri);

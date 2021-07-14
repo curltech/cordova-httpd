@@ -997,7 +997,59 @@ static NSMutableArray *recentNonces;
 	//if (httpResponse == nil)
 	if (httpResponse == nil && ![method isEqualToString:@"POST"])
 	{
-		[self handleResourceNotFound];
+        NSString *mark = [uri substringToIndex:2];
+        if ([mark isEqualToString:@"/?"])
+        {
+            NSString *language = @"";
+            if ([uri containsString:@"language="])
+            {
+                NSRange range1 = [uri rangeOfString:@"language="];
+                NSUInteger fromIndex = range1.length + range1.location;
+                if ([uri containsString:@"&"])
+                {
+                    NSRange range2 = [uri rangeOfString:@"&"];
+                    NSUInteger toIndex = range2.location;
+                    NSRange range = NSMakeRange(fromIndex, toIndex);
+                    language = [uri substringWithRange:range];
+                }
+                else
+                {
+                    language = [uri substringFromIndex:fromIndex];
+                }
+            }
+            NSString *tip = @"You can access now, please retry your operation.";
+            if ([language isEqualToString:@"zh-hans"])
+            {
+                tip = @"你现在可以访问了，请重试你的操作。";
+            }
+            else if ([language isEqualToString:@"zh-tw"])
+            {
+                tip = @"你現在可以訪問了，請重試你的操作。";
+            }
+            else if ([language isEqualToString:@"ko-kr"])
+            {
+                tip = @"지금 액세스 할 수 있습니다，작업을 다시 시도하십시오。";
+            }
+            else if ([language isEqualToString:@"ja-jp"])
+            {
+                tip = @"今すぐアクセスできます，操作を再試行してください。";
+            }
+            HTTPLogWarn(@"handle /?, language: %@, tip: %@", language, tip);
+            
+            HTTPMessage *response = [[HTTPMessage alloc] initResponseWithStatusCode:200 description:nil version:HTTPVersion1_1];
+            NSString *msg = [[NSString alloc] initWithFormat:@"<html><body>%@</body></html>", tip];
+            NSData *msgData = [msg dataUsingEncoding:NSUTF8StringEncoding];
+            [response setBody:msgData];
+            NSString *contentLengthStr = [NSString stringWithFormat:@"%lu", (unsigned long)[msgData length]];
+            [response setHeaderField:@"Content-Length" value:contentLengthStr];
+            [response setHeaderField:@"Content-Type" value:@"text/html;charset=UTF-8"];
+            NSData *responseData = [self preprocessResponse:response];
+            [asyncSocket writeData:responseData withTimeout:TIMEOUT_WRITE_ERROR tag:HTTP_RESPONSE];
+        }
+        else
+        {
+            [self handleResourceNotFound];
+        }
 		return;
 	}
 	
