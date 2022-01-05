@@ -296,14 +296,16 @@ public abstract class NanoHTTPD {
      * Creates an SSLSocketFactory for HTTPS. Pass a KeyStore resource with your
      * certificate and passphrase
      */
-    public static SSLServerSocketFactory makeSSLSocketFactory(String keyAndTrustStoreClasspathPath, char[] passphrase) throws IOException {
+    //public static SSLServerSocketFactory makeSSLSocketFactory(String keyAndTrustStoreClasspathPath, char[] passphrase) throws IOException {
+    public static SSLServerSocketFactory makeSSLSocketFactory(InputStream keystoreStream, char[] passphrase) throws IOException {
         try {
             KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-            InputStream keystoreStream = NanoHTTPD.class.getResourceAsStream(keyAndTrustStoreClasspathPath);
+
+            /*InputStream keystoreStream = NanoHTTPD.class.getResourceAsStream(keyAndTrustStoreClasspathPath);
 
             if (keystoreStream == null) {
                 throw new IOException("Unable to load keystore from classpath: " + keyAndTrustStoreClasspathPath);
-            }
+            }*/
 
             keystore.load(keystoreStream, passphrase);
             KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
