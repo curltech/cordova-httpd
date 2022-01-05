@@ -2,6 +2,7 @@ package com.rjfun.cordova.httpd;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -155,12 +156,19 @@ public class CorHttpd extends CordovaPlugin {
     			server = new WebServer(port, f);
     		}*/
             server = new SimpleWebServer(null, port, f, false, "*");
-            System.setProperty("javax.net.ssl.trustStore", new File("/com/rjfun/cordova/httpd/server-ec.bks").getAbsolutePath());
+            //System.setProperty("javax.net.ssl.trustStore", new File("/com/rjfun/cordova/httpd/server-ec.bks").getAbsolutePath());
             System.setProperty("java.io.tmpdir", localPath);
-            server.makeSecure(NanoHTTPD.makeSSLSocketFactory(System.getProperty("javax.net.ssl.trustStore"), "123456".toCharArray()), null);
+            String assetsFileNames = String.join(";", am.list(""));
+            if (assetsFileNames.indexOf("server-ec.bks") == -1) {
+                throw new IOException("server-ec.bks does not exist!");
+            }
+            InputStream keystoreStream = am.open("server-ec.bks");
+            //server.makeSecure(NanoHTTPD.makeSSLSocketFactory(System.getProperty("javax.net.ssl.trustStore"), "123456".toCharArray()), null);
+            server.makeSecure(NanoHTTPD.makeSSLSocketFactory(keystoreStream, "123456".toCharArray()), null);
             server.start();
 		} catch (IOException e) {
-			errmsg = String.format("IO Exception: %s;keyStoreDefaultType: %s;trustStore: %s;tmpdir: %s", e.getMessage(), KeyStore.getDefaultType(), System.getProperty("javax.net.ssl.trustStore"), System.getProperty("java.io.tmpdir"));
+			//errmsg = String.format("IO Exception: %s;keyStoreDefaultType: %s;trustStore: %s;tmpdir: %s", e.getMessage(), KeyStore.getDefaultType(), System.getProperty("javax.net.ssl.trustStore"), System.getProperty("java.io.tmpdir"));
+            errmsg = String.format("IO Exception: %s;keyStoreDefaultType: %s;tmpdir: %s", e.getMessage(), KeyStore.getDefaultType(), System.getProperty("java.io.tmpdir"));
 			Log.w(LOGTAG, errmsg);
 		}
     	return errmsg;
